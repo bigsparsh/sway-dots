@@ -1,0 +1,492 @@
+(defpoll workspace :interval "0" `swaymsg -t get_workspaces | jq -r '.[] | select(.focused == true).name'`)
+(defvar showbar true)
+(defpoll day :interval "1h" `date "+%a"`)
+(defpoll date :interval "1h" `date "+%d%m"`)
+(defvar exphome false)
+(defvar showplayer false)
+(defvar showstat false)
+(defvar showcal false)
+(defpoll mem :interval "1s" `~/scripts/getram.sh`)
+(defpoll cpu :interval "1s" `~/scripts/getcpu.sh`)
+(defpoll musicstatus :interval "250ms" `playerctl status 2> /dev/null`)
+(defpoll musicover :interval "1s" `~/scripts/music.sh 2> /dev/null`)
+(defpoll time :interval "10s" `date "+%H%M"`)
+(defpoll musicper :interval '0' `~/scripts/musicper.sh 2> /dev/null`)
+(defpoll musictitle :interval "1s" `~/scripts/get-musictitle.sh title`)
+(defpoll musicartist :interval "1s" `~/scripts/get-musictitle.sh artist`)
+(defpoll wificon :interval "1s" `nmcli -f IN-USE,SIGNAL dev wifi | grep '*' | awk '{print $2}'`)
+(defpoll ssid :interval "1s" `nmcli | grep "^wlan0" | sed 's/\ connected\ to\ /Connected to /g' | cut -d ':' -f2 | sed 's/Connected\ to//g'`)
+(defpoll volume :interval "250ms" `pamixer --get-volume`)
+(defpoll bluetooth :interval "1s" `bluetoothctl info | grep -E 'Name: ' | awk '{print $2}'`)
+(defpoll bluetoothbat :interval "1s" ` bluetoothctl info | grep -E 'Battery Percentage: ' | awk '{print $4}' | sed 's/(//g' | sed 's/)//g'`)
+(defpoll battery :interval "10s" `upower -i /org/freedesktop/UPower/devices/battery_BAT1 | grep -E "percentage" | awk '{print $2}'`)
+(defpoll batteryicon :interval "10s" `upower -i /org/freedesktop/UPower/devices/battery_BAT1 | grep -E "icon-name" | awk '{print $2}' | sed "s/'//g"`)
+(defpoll brightness :interval "250ms" `light -G | cut -d "." -f 1`)
+(deflisten cava :initial "0" `~/scripts/cava.sh`)
+
+(defwindow sidebar
+  :class "sidebar"
+  :monitor 0
+  :exclusive false
+  :stacking "bottom"
+  :geometry (geometry
+    :width "40px"
+    :height "94.5%"
+    :y "10px"
+    :x "10px"
+    :anchor "top right"
+  )
+  (bar1)
+)
+
+
+(defwidget bar1 []
+  (box
+    :hexpand true
+    :vexpand true
+    :orientation "v"
+    (top)
+    ;; (middle)
+    (bottom)
+  )
+)
+
+(defwidget top []
+  (box
+    :halign "end"
+    :valign "start"
+    :space-evenly false
+    (_musicinfo)
+  )
+)
+(defwidget bottom []
+  (box
+    :halign "center"
+    :valign "end"
+    :space-evenly false
+    (_systeminfo)
+  )
+)
+
+(defwidget _musicinfo []
+  (button
+    :halign "center"
+    :valign "center"
+    :class "naked-card"
+    :onclick {showplayer == true ? 'eww close music && eww update showplayer=false' : 'eww open music && eww update showplayer=true'}
+      (label :halign "center" :style "font-size: 2.5rem" :text "󰎆")
+
+  )
+)
+
+
+(defwidget _systeminfo []
+  (button
+    :halign "center"
+    :valign "center"
+    :class "naked-card"
+    :onclick {showstat == true ? 'eww close systat && eww update showstat=false' : 'eww open systat && eww update showstat=true'}
+    (box
+      :orientation "v"
+      :space-evenly false
+      (label :halign "center" :valign "end" :style "font-size: 2rem" :text "")
+    )
+
+  )
+)
+
+(defwindow navbar
+  :class "navbar"
+  :stacking "fg"
+  :monitor 0
+  :exclusive true
+  :geometry (geometry
+    :width "100%"
+    :height "35px"
+    :x "0"
+    :y "0"
+    :anchor "top center"
+  )
+  (bar)
+)
+
+(defwidget bar []
+  (box
+    :hexpand true
+    :vexpand true
+    :valign "end"
+    
+    (left)
+    (center)
+    (right)
+  )
+)
+(defwidget spacer []
+  (box
+    :hexpand true
+  )
+)
+
+(defwidget left []
+  (box
+  :halign "start"
+    :orientation "h"
+    :space-evenly false
+    :spacing "10"
+    (_workspaces)
+    (_volume)
+    (_music)
+  )
+)
+(defwidget center []
+  (box
+  :halign "center"
+    :spacing "10"
+    :space-evenly false
+    (_time)
+    (_cava)
+  )
+)
+
+(defwidget _cava []
+  (button
+    :visible {musictitle == "" ? false : true}
+    :halign "center"
+    :valign "center"
+    :class "card"
+    (label :halign "center"  :text cava)
+  )
+)
+
+(defwidget right []
+  (box
+    :hexpand true
+    :vexpand true
+    :orientation "h"
+    :space-evenly false
+    :spacing "10"
+    :halign "end"
+    :valign "center"
+    (_musicont)
+    (_wifi)
+    (_battery)
+    (_brightness)
+    (_bluetooth)
+  )
+)
+(defwidget _musicont []
+  (box
+    :spacing "20"
+    :class "card"
+    :visible {musictitle == "" ? false : true}
+      (button :onclick "playerctl previous" "" )
+      (button :valign "center" :style "margin-left: -7.5px;" :onclick "playerctl play-pause" {musicstatus == "Playing" ? "" : musicstatus == "Paused" ? "" : ""})
+      (button :onclick "playerctl next" "" )
+  )
+)
+
+(defwidget _bluetooth []
+  (button
+    :halign "end"
+    :valign "center"
+    :class "card"
+    :onclick "exec blueman-manager &"
+    :space-evenly false
+    (box
+      :spacing "10"
+      :space-evenly false
+      (label :class "icon" :text "")
+      (label :text "${bluetooth == "" ? "No Device" : bluetooth}")
+    )
+  )
+)
+
+(defwidget _brightness []
+  (eventbox
+    :onscroll "if [ {} == 'up' ]; then brightnessctl set 5%+; else brightnessctl set 5%-; fi"
+    (
+      box
+        :halign "end"
+        :valign "center"
+        :class "card"
+        :spacing "10"
+        :space-evenly false
+        (label :class "icon" :text " ")
+        (label :text "${brightness}%")
+    )
+  )
+)
+
+(defwidget _battery []
+  (box
+    :halign "end"
+    :valign "center"
+    :class "card"
+    :spacing 15
+    :space-evenly false
+    (label :class "icon" :text {batteryicon == "battery-full-symbolic" ? "" : batteryicon == "battery-full-charged-symbolic" ? "" : batteryicon == "battery-good-symbolic" ? "" : batteryicon == "battery-caution-symbolic" ? "" : batteryicon == "battery-low-symbolic" ? "" : ""} )
+    (label :text "${battery}")
+  )
+)
+
+(defwidget _music []
+  (box
+    :visible {musictitle == "" ? false : true}
+    :class "card"
+    :space-evenly false
+    :spacing 10
+    (label :style "font-size: 1.5rem;" :valign "center" :text `󰎌`)
+    (label :text `${musictitle == "" ? "No media playing" : musictitle}`)
+  )
+)
+
+(defwidget _volume []
+  (eventbox
+    :onscroll "if [ {} == 'up' ]; then pamixer -i 5; else pamixer -d 5; fi"
+    (box
+      :halign "end"
+      :valign "center"
+      :class "card"
+      :spacing "10"
+      :space-evenly false
+      (label :class "icon" :text " ")
+      (label :text "${volume}%")
+    )
+  )
+)
+
+(defwidget _wifi []
+  (box
+    :halign "end"
+    :valign "center"
+    :class "card"
+    :spacing "10"
+    :space-evenly false
+    (label :class "icon" :text {ssid == "" ? "󱚵 " : " "})
+    (label :text {"${ssid}" == "" ? "No Connection" : ssid})
+  )
+)
+
+(defwidget _workspaces []
+  (eventbox
+    :onscroll "if [ {} == 'up' ]; then swaymsg workspace prev; else swaymsg workspace next; fi"
+    (box
+    :class "workspaces"
+    :spacing "20"
+      (button :onclick "swaymsg workspace 1" :class {workspace == "1" ? "workspace-btn active" : "workspace-btn"} {workspace == "1" ? "" : ""})
+      (button :onclick "swaymsg workspace 2" :class {workspace == "2" ? "workspace-btn active" : "workspace-btn"} {workspace == "2" ? "" : ""})
+      (button :onclick "swaymsg workspace 3" :class {workspace == "3" ? "workspace-btn active" : "workspace-btn"} {workspace == "3" ? "" : ""})
+      (button :onclick "swaymsg workspace 4" :class {workspace == "4" ? "workspace-btn active" : "workspace-btn"} {workspace == "4" ? "" : ""})
+      (button :onclick "swaymsg workspace 5" :class {workspace == "5" ? "workspace-btn active" : "workspace-btn"} {workspace == "5" ? "" : ""})
+      (button :onclick "swaymsg workspace 6" :class {workspace == "6" ? "workspace-btn active" : "workspace-btn"} {workspace == "6" ? "" : ""})
+      (button :onclick "swaymsg workspace 7" :class {workspace == "7" ? "workspace-btn active" : "workspace-btn"} {workspace == "7" ? "" : ""})
+      (button :onclick "swaymsg workspace 8" :class {workspace == "8" ? "workspace-btn active" : "workspace-btn"} {workspace == "8" ? "" : ""})
+      (button :onclick "swaymsg workspace 9" :class {workspace == "9" ? "workspace-btn active" : "workspace-btn"} {workspace == "9" ? "" : ""})
+      (button :onclick "swaymsg workspace 10" :class {workspace == "10" ? "workspace-btn active" : "workspace-btn"} {workspace == "10" ? "" : ""})
+    )
+  )
+)
+(defwindow cal
+  :monitor 0
+  :geometry (geometry
+    :width "150px"
+    :height "200px"
+    :anchor "top center"
+  )
+  :class "cal-back"
+  (box
+    :orientation "v"
+    :class "cal-box"
+    (calendar 
+      :class "cal-main"
+    )
+  )
+)
+(defwidget _time []
+  (eventbox
+    :onhover 'eww open cal'
+    :onhoverlost 'eww close cal'
+    :dragvalue time
+    :dragtype "text"
+    (box
+      :class "card"
+      :space-evenly false
+      :spacing 15
+      (label :valign "center" :text "󰣇")
+      (label :valign "center" :style "font-size: 1.25rem; font-weight: bolder;" :text time)
+    )
+  )
+)
+
+(defwindow music
+  :monitor 0
+  :stacking "bottom"
+  :geometry (geometry 
+    :width "300px"
+    :height "300px"
+    :x "60px"
+    :y "10px"
+    :anchor "top right"
+  )
+  :hexpand true
+  :vexpand true
+  (musicontent)
+)
+
+(defwidget musicontent []
+  (box
+    :class "music-back"
+    :css `@import "/home/sparsh/.cache/wal/colors"; .music-back{background-image: linear-gradient(200deg, transparent, $color2), url('${musicover}');}`
+    :orientation "v"
+    (box
+      :halign "end"
+      :valign "start"
+      :spacing 10
+      :class "music-controls"
+      :orientation "v"
+      :visible {musictitle == "" ? false : true}
+      (button :class "music-button" :onclick "playerctl previous" "" )
+      (button :class "music-button" :halign "center" :valign "center" :onclick "playerctl play-pause" {musicstatus == "Playing" ? "" : musicstatus == "Paused" ? "" : ""})
+      (button :class "music-button" :onclick "playerctl next" "" )
+    )
+    (box
+      :class "music-details"
+      :orientation "v"
+      :valign "end"
+      :spacing 0
+      (progress :visible {musictitle == "" ? false : true} :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2; border: 1px dotted $color0; min-height: 0.5rem; }' :class "music-progress"  :value {musicper == "" ? 0 : musicper} )
+      (label :halign "start" :css "*{font-size: 1.25rem; font-weight: bolder; margin-bottom: -0.5rem;}" :text {musictitle == "" ? "󰝛   Nothing playing right now" : musictitle})
+      (label :halign "start" :css "*{font-size: 0.95rem;}" :text {musicartist == "" ? "" : musicartist})
+    )
+  )
+)
+
+(defwindow fatday
+  :monitor 0
+  :geometry (geometry
+    :width "35%"
+    :anchor "top left"
+    :y "-50px"
+    :x "10px"
+  )
+  :exclusive false
+  :stacking "bottom"
+  (box
+    :orientation "v"
+    :space-evenly false
+    :spacing -60
+    (box
+      :orientation "h"
+      :space-evenly false
+      :spacing -20
+      (label :class "half-date" :angle 90 :gravity "auto"  :valign "center" :text date)
+      (label :class "fat-heading" :halign "start" :valign "start" :text day)
+    )
+    (box
+      :orientation "v"
+      :space-evenly false
+      :halign "start"
+      :spacing -5
+      (button
+        :onclick "brave --app='https://github.com/bigsparsh'"
+        (box
+          :orientation "h"
+          :class "naked-card"
+          :spacing 20
+          :space-evenly false
+          :style "margin-left: 10px;"
+          (label :style "font-size: 1.5rem" :text "")
+          (label :style "font-size: 1.25rem" :text "Github")
+        )
+      )
+      (button
+        :onclick "brave --app='https://youtube.com'"
+        (box
+          :orientation "h"
+          :class "naked-card"
+          :spacing 20
+          :space-evenly false
+          :style "margin-left: 10px;"
+          (label :style "font-size: 1.5rem" :text "")
+          (label :style "font-size: 1.25rem" :text "YouTube")
+        )
+      )
+    )
+  )
+)
+
+
+(defwindow systat
+  :monitor 0
+  :stacking "bottom"
+  :geometry (geometry 
+    :width "300px"
+    :height "300px"
+    :x "60px"
+    :y "10px"
+    :anchor "bottom right"
+  )
+  :hexpand true
+  :vexpand true
+  (_systat)
+)
+
+(defpoll wallpaper :interval "1s" `~/.cache/wal/wallpaper.sh`)
+(defwidget _systat [] 
+  (box
+    :class "sys-over"
+    :orientation "v"
+    :space-evenly false
+    :css `@import "/home/sparsh/.cache/wal/colors"; .sys-over{background: linear-gradient(transparent , $color6 ), radial-gradient(transparent, $color1), url('${wallpaper}') center/cover; padding: 2rem; border: 2px solid $color1;}`
+    (box
+    :orientation "h"
+    :space-evenly true
+    :class "music-back"
+    :style "background-color: transparent; border: 0;"
+      (box 
+        :orientation "v"
+        :space-evenly false
+        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value mem )
+        (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+        (label :halign "center" :text "${mem}%" :class "text")
+      )
+      (box 
+        :orientation "v"
+        :space-evenly false
+        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value cpu )
+        (label :halign "center" :text "󰍛" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+        (label :halign "center" :text "${cpu}%" :class "text")
+      )
+      (box 
+        :orientation "v"
+        :space-evenly false
+        :visible {bluetooth == "" ? false : true}
+        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value bluetoothbat )
+        (label :halign "center" :text "󰥈" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+        (label :halign "center" :text "${bluetoothbat}%" :class "text")
+      )
+      (box 
+        :orientation "v"
+        :space-evenly false
+        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value wificon )
+        (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+        (label :halign "center" :text "${wificon}%" :class "text")
+      )
+    )
+    (box
+      :class "sys-info"
+      :space-evenly false
+      :spacing 25
+      (label :halign "start" :text "")
+      (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_UP, 0, 7)} kbps")
+    )
+    (box
+      :class "sys-info"
+      :space-evenly false
+      :spacing 25
+      (label :halign "start" :text "")
+      (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_DOWN, 0, 7)} kbps")
+    )
+  )
+)
+

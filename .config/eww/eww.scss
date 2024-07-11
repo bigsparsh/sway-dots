@@ -1,0 +1,190 @@
+@import "/home/sparsh/.cache/wal/colors";
+* {
+  transition-duration: 0.15s;
+  border-radius: 1.5rem;
+}
+.card {
+  background-color: $color1;
+  border-radius: 1.5rem;
+  padding: 2.5px 15px;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: $color7;
+  font-family: "Chakra Petch";
+}
+
+.naked-card {
+  /* background-color: $color1; */
+  border-radius: 1.5rem;
+  padding: 2.5px 15px;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: $color1;
+  font-family: "Chakra Petch";
+}
+.vcard {
+  background-color: $color1;
+  border-radius: 1.5rem;
+  padding: 10px 0;
+  font-size: 1.25rem;
+  color: $color7;
+  min-width: 40px;
+}
+
+.vicon {
+  margin-left: -0.5rem;
+  font-size: 1.15rem;
+}
+.icon {
+  font-size: 1.15rem;
+}
+.time {
+  font-family: "Chakra Petch";
+  font-weight: bolder;
+  color: $color7;
+  font-size: 1.5rem;
+  background-color: $color1;
+  padding: 0 20px 0 20px;
+  border-radius: 2rem;
+  &:hover {
+    background-color: $color2;
+  }
+}
+.sidebar {
+  background-color: transparent;
+  border: none;
+}
+.navbar {
+  background-color: transparent;
+  /* background-color: lightblue; */
+  padding: 0 7px 0 7px;
+}
+.workspaces {
+  border-radius: 30px;
+  background-color: $color1;
+  padding: 5px 17.5px 5px 10px;
+}
+.workspace-btn {
+  background-color: transparent;
+  color: $color7;
+  background: none;
+  border: none;
+}
+.active {
+  color: $color7;
+}
+.cal-box {
+  font-family: "Chakra Petch";
+  font-weight: bolder;
+  padding: 5px;
+  background-color: $color1;
+  border-radius: 1.5rem;
+}
+.cal-back {
+  border-radius: 1.5rem;
+}
+.cal-main {
+  background-color: $color1;
+  border-radius: 1.5rem;
+  padding: 5px;
+  color: $color7;
+}
+calendar:selected {
+  color: $color0;
+}
+calendar:indeterminate {
+  color: $color10;
+}
+
+.cal * {
+  border: none;
+}
+
+.music-cover {
+  border-radius: 1.5rem;
+}
+.music-back {
+  background-size: cover;
+  background-position: center;
+  border: 2px solid $color1;
+  border-radius: 1.5rem;
+}
+.music-details {
+  font-family: "Chakra Petch";
+  border-radius: 1.3rem;
+  padding: 20px 30px 20px 30px;
+  color: $color7;
+}
+.music-button {
+  font-family: "Pixelify Sans";
+  padding: 5px 10px;
+  border-radius: 100%;
+  box-shadow: 0 0 2px $color0;
+  color: $color7;
+  background: $color1;
+  border: none;
+  &:hover {
+    background: $color2;
+  }
+}
+button {
+  all: unset;
+}
+.music-progress > trough {
+  background-color: $color6;
+  border: 1px dotted $color0;
+  border: none;
+  min-height: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.music-controls {
+  padding: 0.25rem;
+  margin: 0.5rem;
+  border-radius: 3rem;
+}
+.fat-heading {
+  font-size: 17.5rem;
+  font-family: "Chakra Petch";
+  color: $color1;
+  background: none;
+  font-weight: bolder;
+  background-color: transparent;
+  /* text-shadow: 0 0 10px $color0; */
+}
+.fatday {
+  background-color: transparent;
+}
+.fatdate {
+  background-color: transparent;
+}
+.half-date {
+  font-family: "Chakra Petch";
+  font-size: 5rem;
+  color: $color1;
+  /* text-shadow: 0 0 10px $color0; */
+  font-weight: bolder;
+}
+.sys-progress > trough {
+  background-color: $color6;
+  border: 1px dotted $color0;
+  border: none;
+  min-width: 2rem;
+  min-height: 175px;
+  margin-bottom: 0.5rem;
+}
+.text {
+  border-radius: 1.5rem;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: $color7;
+  font-family: "Chakra Petch";
+}
+.sys-info {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  color: $color7;
+  background-color: $color1;
+  padding: 0 1rem;
+  font-weight: bolder;
+  font-family: "Chakra Petch";
+}

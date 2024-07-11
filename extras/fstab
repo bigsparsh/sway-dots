@@ -1,0 +1,23 @@
+# Static information about the filesystems.
+# See fstab(5) for details.
+
+# <file system> <dir> <type> <options> <dump> <pass>
+# /dev/nvme0n1p2
+UUID=778ff6af-efc2-438f-98f2-94f66359e2d7	/         	btrfs     	rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@	0 0
+
+# /dev/nvme0n1p2
+UUID=778ff6af-efc2-438f-98f2-94f66359e2d7	/home     	btrfs     	rw,relatime,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home	0 0
+
+# /dev/nvme0n1p2
+UUID=778ff6af-efc2-438f-98f2-94f66359e2d7	/var/log  	btrfs     	rw,relatime,ssd,discard=async,space_cache=v2,subvolid=258,subvol=/@log	0 0
+
+# /dev/nvme0n1p2
+UUID=778ff6af-efc2-438f-98f2-94f66359e2d7	/var/cache/pacman/pkg	btrfs     	rw,relatime,ssd,discard=async,space_cache=v2,subvolid=259,subvol=/@pkg	0 0
+
+# /dev/nvme0n1p2
+UUID=778ff6af-efc2-438f-98f2-94f66359e2d7	/.snapshots	btrfs     	rw,relatime,ssd,discard=async,space_cache=v2,subvolid=260,subvol=/@.snapshots	0 0
+
+# /dev/nvme0n1p1
+UUID=2176-EB86      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+
+UUID=15bc0023-4698-4098-893e-ac662b999dc0 /home/sparsh/drive btrfs rw,user,auto 0 0

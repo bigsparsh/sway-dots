@@ -1,0 +1,20 @@
+[window]
+opacity = 0.75
+[colors]
+transparent_background_colors = true
+[font.normal]
+# family = "SpaceMono Nerd Font"
+# family = "ShureTechMono Nerd Font"
+# family = "DM Mono"
+# family = "Sometype Mono"
+family = "Source Code Pro"
+# family = "B612 Mono"
+# family = "Lekton Nerd Font"
+style = "Regular"
+[font]
+size = 18
+[window.padding]
+x = 20
+y = 20
+[cursor]
+style = "Beam"
