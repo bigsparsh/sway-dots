@@ -2,6 +2,16 @@ local opt = vim.opt
 local g = vim.g
 local config = require("core.utils").load_config()
 
+local autocmd = vim.api.nvim_create_autocmd
+
+autocmd("VimEnter", {
+  command = ":silent !alacritty @ set-spacing padding=0 margin=0",
+})
+
+autocmd("VimLeavePre", {
+  command = ":silent !alacritty @ set-spacing padding=20 margin=10",
+})
+
 -------------------------------------- globals -----------------------------------------
 g.nvchad_theme = config.ui.theme
 g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"

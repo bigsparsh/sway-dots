@@ -1,6 +1,6 @@
 #!/bin/sh
 
-last_title=`/tmp/last_title.sh`
+last_title=`~/temp/last_title.sh`
 
   # get album details
   current_title=`playerctl metadata --format '{{ title }}' 2> /dev/null`
@@ -31,7 +31,7 @@ last_title=`/tmp/last_title.sh`
     # setting the new cover
 
   fi
-  echo "echo '$current_title'" > /tmp/last_title.sh
+  echo "echo '$current_title'" > ~/temp/last_title.sh
   
   echo "/tmp/cover.png"
 

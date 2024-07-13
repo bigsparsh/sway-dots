@@ -76,6 +76,7 @@ bindsym XF86Display exec blueman-manager &
     
     # opening whatsapp web
     bindsym $mod+w exec brave --app="https://web.whatsapp.com"
+    bindsym $mod+t exec telegram-desktop
 
     # opening 100xdevs
     bindsym $mod+equal exec brave --app="https://app.100xdevs.com"
@@ -85,11 +86,11 @@ bindsym XF86Display exec blueman-manager &
 
 
 # Screenshot a window
-    bindsym $mod+Print exec ~/sway-screenshot/sway-screenshot -m window 
+    bindsym $mod+Print exec ~/scripts/sway-screenshot -m window 
 # Screenshot a monitor
-    bindsym Print exec ~/sway-screenshot/sway-screenshot -m output
+    bindsym Print exec ~/scripts/sway-screenshot -m output
 # Screenshot a region
-    bindsym $mod+Shift+Print exec ~/sway-screenshot/sway-screenshot -m region
+    bindsym $mod+Shift+Print exec ~/scripts/sway-screenshot -m region
 
     # togglenar
     bindsym $mod+shift+b exec ~/scripts/toggle-bar.sh

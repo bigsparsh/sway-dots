@@ -6,13 +6,15 @@ transparent_background_colors = true
 # family = "SpaceMono Nerd Font"
 # family = "ShureTechMono Nerd Font"
 # family = "DM Mono"
-# family = "Sometype Mono"
-family = "Source Code Pro"
+family = "Sometype Mono"
+# family = "Source Code Pro"
+# family = "Zed Mono Nerd Font"
+# family = "ZedMono NFP Extd"
 # family = "B612 Mono"
 # family = "Lekton Nerd Font"
 style = "Regular"
 [font]
-size = 18
+size = 16
 [window.padding]
 x = 20
 y = 20
