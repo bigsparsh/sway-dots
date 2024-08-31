@@ -144,7 +144,6 @@
     :spacing "10"
     :space-evenly false
     (_time)
-    (_cava)
   )
 )
 
@@ -240,18 +239,20 @@
   )
 )
 
+(defvar muted false)
 (defwidget _volume []
   (eventbox
     :onscroll "if [ {} == 'up' ]; then pamixer -i 5; else pamixer -d 5; fi"
-    :onclick "exec pavucontrol &"
+    :onrightclick "exec pavucontrol &"
+    :onclick {muted == true ? 'eww update muted=false && pamixer --unmute' : 'eww update muted=true && pamixer --mute'}
     (box
       :halign "end"
       :valign "center"
       :class "card"
       :spacing "10"
       :space-evenly false
-      (label :class "icon" :text " ")
-      (label :text "${volume}%")
+      (label :class "icon" :text {volume != 0 && muted == false ? " " : " "})
+      (label :text {muted == true ? "Muted" : "${volume}%"})
     )
   )
 )

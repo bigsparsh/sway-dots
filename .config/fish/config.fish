@@ -12,13 +12,16 @@ if status is-interactive
   alias ga "git add ."
   alias gp "git push origin main"
   alias gi "git init -b main"
+  alias gs "git status"
+  alias sv "sudo nvim"
   alias shitdown "systemctl poweroff"
   alias confish "nvim ~/.config/fish/config.fish"
-  alias conf3 "nvim ~/.config/sway/config"
+  alias conf3 "sudo nvim ~/dotfiles/.config/sway/config"
   alias bar "~/.config/polybar/launch.sh --cuts"
   alias n nmtui
   alias reboot "systemctl reboot"
   alias wall "~/scripts/change-wall.sh"
+  alias cprog "gcc ./$1.c -o $1.out && ./$1.out"
 end
 
 # bun
