@@ -1,1 +1,1 @@
-echo 'Brutalizer 2'
+echo ''
