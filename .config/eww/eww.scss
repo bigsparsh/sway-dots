@@ -12,14 +12,22 @@
   color: $color7;
   font-family: "Chakra Petch";
 }
-
+.big-icon {
+  font-size: 5rem;
+}
+.temperature-text {
+  font-size: 3rem;
+}
+.weather-text {
+  font-size: 1.5rem;
+}
 .naked-card {
   /* background-color: $color1; */
   border-radius: 0.8rem;
   padding: 2.5px 15px;
   font-weight: bold;
   font-size: 1.25rem;
-  color: $color1;
+  color: $color7;
   font-family: "Chakra Petch";
 }
 .vcard {
@@ -49,6 +57,10 @@
   &:hover {
     background-color: $color2;
   }
+}
+.temp_window {
+  background-color: transparent;
+  color: $color7;
 }
 .sidebar {
   background-color: transparent;
@@ -145,7 +157,6 @@ button {
 .fat-heading {
   font-size: 17.5rem;
   font-family: "Chakra Petch";
-  color: $color1;
   letter-spacing: -1rem;
   background: none;
   font-weight: bold;
@@ -154,14 +165,15 @@ button {
 }
 .fatday {
   background-color: transparent;
+  color: $color7;
 }
 .fatdate {
   background-color: transparent;
+  color: $color7;
 }
 .half-date {
   font-family: "Chakra Petch";
   font-size: 5rem;
-  color: $color1;
   /* text-shadow: 0 0 10px $color0; */
   font-weight: bolder;
 }

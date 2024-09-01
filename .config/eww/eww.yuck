@@ -175,6 +175,43 @@
     (_bluetooth)
   )
 )
+(defwindow temp_window
+ :monitor 0
+ :stacking "bottom"
+ :geometry (geometry
+	:width "17.5%"
+	:height "10%"
+	:anchor "bottom left"
+	:y "10px"
+	:x "10px"
+ )
+ :style "background-color: red;"
+ (_weather)
+)
+(defpoll temperature :interval "1h" `cd ~/weather/ && bun run temp`)
+(defpoll temp_icon :interval "1h" `cd ~/weather/ && bun run icon`)
+(defwidget _weather []
+  (button
+    :halign "start"
+    :valign "center"
+    :class "card"
+    :onclick "exec blueman-manager &"
+    (box
+      :spacing "10"
+      :space-evenly false
+      :orientation "h"
+      (label :class "big-icon" :text {temp_icon == "Patchy rain nearby" || temp_icon == "Light rain shower" || temp_icon == "Light rain"? " " : temp_icon == "Overcast" ? " " : temp_icon == "Partly cloudy" ? " " : temp_icon == "Sunny" || temp_icon == "Clear"? " " : temp_icon == "Mist" ? " " : "Weather"})
+      (box 
+	      :spacing "-15"
+	      :space-evenly false
+	      :orientation "v"
+	      :valign "center"
+	      (label :halign "start" :class "temperature-text" :text "${temperature} °c")
+	      (label :halign "start" :class "weather-text" :text "${temp_icon}")
+      )
+    )
+  )
+)
 (defwidget _musicont []
   (box
     :spacing "20"
@@ -192,7 +229,6 @@
     :valign "center"
     :class "card"
     :onclick "exec blueman-manager &"
-    :space-evenly false
     (box
       :spacing "10"
       :space-evenly false
@@ -260,14 +296,17 @@
 )
 
 (defwidget _wifi []
-  (box
+  (button
     :halign "end"
     :valign "center"
     :class "card"
-    :spacing "10"
-    :space-evenly false
-    (label :class "icon" :text {ssid == "" ? "󱚵 " : " "})
-    (label :text {"${ssid}" == "" ? "No Connection" : ssid})
+	    :onclick 'exec alacritty -e nmtui &'
+    (box
+	    :space-evenly false
+	    :spacing {ssid == "disconnected" ? "0": "10"}
+	    (label :class "icon" :text {ssid == " disconnected" ? "󰇨" : " "})
+	    (label :text {"${ssid}" == " disconnected" ? "" : ssid})
+    )
   )
 )
 
