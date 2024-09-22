@@ -1,7 +1,7 @@
 # setting the mod key
 include "/home/sparsh/.cache/wal/colors-sway"
 
-exec ~/scripts/start-script.sh
+# exec ~/scripts/start-script.sh
 exec blueman-applet
 
 set $mod Mod4

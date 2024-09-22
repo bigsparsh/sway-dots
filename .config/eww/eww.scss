@@ -12,8 +12,32 @@
   color: $color7;
   font-family: "Chakra Petch";
 }
+.systat {
+  background-color: transparent;
+}
 .big-icon {
   font-size: 5rem;
+}
+.todo-box {
+  /* border: 1px solid $color7; */
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.big-todo {
+  /* background-color: rgba($color1, 0.5); */
+  /* border: 3px solid $color1; */
+}
+.small-heading {
+  color: $color9;
+  text-shadow: 0 0 10px $color2;
+  /* padding: 1rem; */
+  margin-top: 1rem;
+  font-weight: 900;
+  margin-right: 1.5rem;
+  /* letter-spacing: 2rem; */
+  font-size: 4rem;
+  font-family: "Orbitron";
 }
 .temperature-text {
   font-size: 3rem;
@@ -27,7 +51,7 @@
   padding: 2.5px 15px;
   font-weight: bold;
   font-size: 1.25rem;
-  color: $color7;
+  color: $color1;
   font-family: "Chakra Petch";
 }
 .vcard {
@@ -60,7 +84,7 @@
 }
 .temp_window {
   background-color: transparent;
-  color: $color7;
+  color: $color1;
 }
 .sidebar {
   background-color: transparent;
@@ -165,7 +189,7 @@ button {
 }
 .fatday {
   background-color: transparent;
-  color: $color7;
+  color: $color1;
 }
 .fatdate {
   background-color: transparent;

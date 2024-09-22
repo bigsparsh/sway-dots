@@ -22,6 +22,7 @@ if status is-interactive
   alias reboot "systemctl reboot"
   alias wall "~/scripts/change-wall.sh"
   alias cprog "gcc ./$1.c -o $1.out && ./$1.out"
+  alias todo "cd ~/todos/ && bun run todoOperations.ts "
 end
 
 # bun

@@ -1,1 +1,1 @@
-echo 'lovely (with Khalid)'
+echo 'dumb dumb'

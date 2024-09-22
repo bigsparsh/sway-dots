@@ -57,7 +57,16 @@
     :halign "end"
     :valign "start"
     :space-evenly false
+    :orientation "v"
+    :spacing "20"
     (_musicinfo)
+    (button
+      :halign "center"
+      :valign "center"
+      :class "naked-card"
+      :onclick {`exec ~/scripts/random-wall.sh &`}
+      (label :halign "center" :style "font-size: 2.5rem" :text "󰸉")
+    )
   )
 )
 (defwidget bottom []
@@ -90,7 +99,7 @@
     (box
       :orientation "v"
       :space-evenly false
-      (label :halign "center" :valign "end" :style "font-size: 2rem" :text "")
+      (label :halign "center" :valign "end" :style "font-size: 2rem" :text "")
     )
 
   )
@@ -200,7 +209,7 @@
       :spacing "10"
       :space-evenly false
       :orientation "h"
-      (label :class "big-icon" :text {temp_icon == "Patchy rain nearby" || temp_icon == "Light rain shower" || temp_icon == "Light rain"? " " : temp_icon == "Overcast" ? " " : temp_icon == "Partly cloudy" ? " " : temp_icon == "Sunny" || temp_icon == "Clear"? " " : temp_icon == "Mist" ? " " : "Weather"})
+      (label :class "big-icon" :text {temp_icon == "Patchy rain nearby" || temp_icon == "Light rain shower" || temp_icon == "Light rain"? " " : temp_icon == "Overcast" ? " " : temp_icon == "Partly Cloudy" ? " " : temp_icon == "Sunny" || temp_icon == "Clear"? " " : temp_icon == "Mist" ? " " : " "})
       (box 
 	      :spacing "-15"
 	      :space-evenly false
@@ -463,73 +472,146 @@
   :monitor 0
   :stacking "bottom"
   :geometry (geometry 
-    :width "300px"
-    :height "300px"
+    :width "25%"
+    :height "60%"
     :x "60px"
     :y "10px"
     :anchor "bottom right"
   )
   :hexpand true
   :vexpand true
-  (_systat)
+  (_todos)
 )
 
-(defpoll wallpaper :interval "1s" `~/.cache/wal/wallpaper.sh`)
-(defwidget _systat [] 
+(defpoll todos :interval "1s" 'cd ~/todos/ && bun run getodos')
+(defwidget _todos []
   (box
-    :class "sys-over"
+    :class "big-todo"
     :orientation "v"
     :space-evenly false
-    :css `@import "/home/sparsh/.cache/wal/colors"; .sys-over{background: linear-gradient(transparent , $color6 ), radial-gradient(transparent, $color1), url('${wallpaper}') center/cover; padding: 2rem; border: 2px solid $color1;}`
-    (box
-    :orientation "h"
-    :space-evenly true
-    :class "music-back"
-    :style "background-color: transparent; border: 0;"
-      (box 
+    (label :class "small-heading" :hexpand true :halign "end" :text "TODOS")
+    (scroll
+      :hscroll false
+      :vscroll true
+      :vexpand true
+      :style "padding-bottom: 10px; padding-top: 10px;"
+      (box
         :orientation "v"
         :space-evenly false
-        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value mem )
-        (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
-        (label :halign "center" :text "${mem}%" :class "text")
+        :spacing "7"
+        (for todo in todos
+          (box 
+            :class "todo-box" 
+            :space-evenly false 
+            :spacing 4 
+            :orientation "v"
+            :css {`@import "/home/sparsh/.cache/wal/colors"; .todo-box { font-family: "rubik"; color: $color7; ` + (todo.done ?  "background-color: rgba($color2, 0.85);}" : "background-color: rgba($color5, 0.85);}")} 
+
+            (box :style "font-size: 1.5rem; font-weight: bold;"
+              :space-evenly false
+              :spacing "10"
+              :hexpand true
+              :valign "center"
+              {todo.title}
+            )
+
+            (label
+              :halign "start"
+              :wrap true
+              :show-truncated false
+              :unindent true
+              :text {todo.description}
+            )
+
+            (box
+              :space-evenly false
+              (label
+                :halign "start"
+                :style "font-weight: 500;"
+                :wrap true
+                :text "Deadline: ${todo.last_date}"
+              )
+              (box
+                :halign "end"
+                :hexpand true
+                :spacing "10"
+                :space-evenly false
+                (button
+                  :css `@import "/home/sparsh/.cache/wal/colors"; *{background-color: $color3; color: $color7; font-weight: 500; padding-left: .5rem; padding-bottom: .25rem;padding-top: .25rem; padding-right: .5rem; border-radius: 1rem;}`
+                  :onclick `cd ~/todos/ && bun run todoOperations.ts complete ${todo.id}`
+                  {!todo.done ? "Complete": "Uncomplete"}
+                )
+                (button
+                  :css `@import "/home/sparsh/.cache/wal/colors"; *{background-color: $color1; font-weight: 500;padding-left: .5rem; padding-bottom: .25rem;padding-top: .25rem; padding-right: .5rem; border-radius: 1rem;}`
+                  :onclick `cd ~/todos/ && bun run todoOperations.ts delete ${todo.id}`
+                  "Delete"
+                )
+              )
+            )
+
+          )
+        )
       )
-      (box 
-        :orientation "v"
-        :space-evenly false
-        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value cpu )
-        (label :halign "center" :text "󰍛" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
-        (label :halign "center" :text "${cpu}%" :class "text")
-      )
-      (box 
-        :orientation "v"
-        :space-evenly false
-        :visible {bluetooth == "" ? false : true}
-        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value bluetoothbat )
-        (label :halign "center" :text "󰥈" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
-        (label :halign "center" :text "${bluetoothbat}%" :class "text")
-      )
-      (box 
-        :orientation "v"
-        :space-evenly false
-        (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value wificon )
-        (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
-        (label :halign "center" :text "${wificon}%" :class "text")
-      )
-    )
-    (box
-      :class "sys-info"
-      :space-evenly false
-      :spacing 25
-      (label :halign "start" :text "")
-      (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_UP, 0, 7)} kbps")
-    )
-    (box
-      :class "sys-info"
-      :space-evenly false
-      :spacing 25
-      (label :halign "start" :text "")
-      (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_DOWN, 0, 7)} kbps")
     )
   )
 )
 
+;; (defpoll wallpaper :interval "1s" `~/.cache/wal/wallpaper.sh`)
+;; (defwidget _systat [] 
+;;   (box
+;;     :class "sys-over"
+;;     :orientation "v"
+;;     :space-evenly false
+;;     :css `@import "/home/sparsh/.cache/wal/colors"; .sys-over{background: linear-gradient(transparent , $color6 ), radial-gradient(transparent, $color1), url('${wallpaper}') center/cover; padding: 2rem; border: 2px solid $color1;}`
+;;     (box
+;;     :orientation "h"
+;;     :space-evenly true
+;;     :class "music-back"
+;;     :style "background-color: transparent; border: 0;"
+;;       (box 
+;;         :orientation "v"
+;;         :space-evenly false
+;;         (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value mem )
+;;         (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+;;         (label :halign "center" :text "${mem}%" :class "text")
+;;       )
+;;       (box 
+;;         :orientation "v"
+;;         :space-evenly false
+;;         (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value cpu )
+;;         (label :halign "center" :text "󰍛" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+;;         (label :halign "center" :text "${cpu}%" :class "text")
+;;       )
+;;       (box 
+;;         :orientation "v"
+;;         :space-evenly false
+;;         :visible {bluetooth == "" ? false : true}
+;;         (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value bluetoothbat )
+;;         (label :halign "center" :text "󰥈" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+;;         (label :halign "center" :text "${bluetoothbat}%" :class "text")
+;;       )
+;;       (box 
+;;         :orientation "v"
+;;         :space-evenly false
+;;         (progress :css '@import "/home/sparsh/.cache/wal/colors"; progress{ background-color: $color2 ; border: 1px dotted $color0; min-width: 2rem;  }' :class "sys-progress"  :halign "center" :orientation "v" :value wificon )
+;;         (label :halign "center" :text "" :style "font-size: 2rem; font-family: 'Lekton Nerd Font'; margin-left: -10px;")
+;;         (label :halign "center" :text "${wificon}%" :class "text")
+;;       )
+;;     )
+;;     (box
+;;       :class "sys-info"
+;;       :space-evenly false
+;;       :spacing 25
+;;       (label :halign "start" :text "")
+;;       (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_UP, 0, 7)} kbps")
+;;     )
+;;     (box
+;;       :class "sys-info"
+;;       :space-evenly false
+;;       :spacing 25
+;;       (label :halign "start" :text "")
+;;       (label :halign "end" :text "${substring(EWW_NET.wlan0.NET_DOWN, 0, 7)} kbps")
+;;     )
+;;   )
+;; )
+;;
